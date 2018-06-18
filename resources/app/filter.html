@@ -1,0 +1,386 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="./include.js"></script>
+    <title>filter</title>
+    <!-- Tocas UI：CSS 與元件 -->
+    <link rel="stylesheet" href="./tocasUI/tocas.css" />
+    <!-- Tocas JS：模塊與 JavaScript 函式 -->
+    <script src="./tocasUI/tocas.js"></script>
+</head>
+
+<body style="background-color:#e4e4e4;">
+    <div id="data">
+        <div id="loader" class="ts basic dashed slate">
+            <span class="header">上傳音訊檔</span>
+            <span class="description">將音訊檔拖拉至此進行上傳。檔案類型須為json、mp3或wav</span>
+        </div>
+        <br/>
+        <div class="ts inverted segment">
+            <details class="ts inverted accordion" open>
+                <summary>
+                    低通濾波器
+                </summary>
+                <div class="content">
+                    <div class="ts grid">
+                        <div class="two wide column">
+                            <button onclick="lowPassFilter.frequency=Number(data_vue.low.Frequency)" class="ts tiny primary button">Frequency</button>
+                        </div>
+                        <div class="one wide column">
+                            {{low.Frequency}}
+                        </div>
+                        <div class="twelve wide column">
+                            <div class="ts slider frequency">
+                                <div class="ts basic right pointing label">10</div>
+                                <input type="range" onmouseup="lowPassFilter.frequency=Number(data_vue.low.Frequency)" v-model="low.Frequency" min="10" max="22050" step="1">
+                                <div class="ts basic left pointing label">22050</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="ts grid">
+                        <div class="two wide column">
+                            <button onclick="lowPassFilter.peak=Number(data_vue.low.Peak)" class="ts tiny primary button">Peak</button>
+                        </div>
+                        <div class="one wide column">
+                            {{low.Peak}}
+                        </div>
+                        <div class="twelve wide column">
+                            <div class="ts slider peak">
+                                <div class="ts basic right pointing label">0.0001</div>
+                                <input type="range" onmouseup="lowPassFilter.peak=Number(data_vue.low.Peak)" v-model="low.Peak" min="0.0001" max="20" step="0.0001">
+                                <div class="ts basic left pointing label">20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+        <br/>
+        <div class="ts inverted segment">
+            <details class="ts inverted accordion" open>
+                <summary>
+                    高通濾波器
+                </summary>
+                <div class="content">
+                    <div class="ts grid">
+                        <div class="two wide column">
+                            <button onclick="highPassFilter.frequency=Number(data_vue.high.Frequency)" class="ts tiny primary button">Frequency</button>
+                        </div>
+                        <div class="one wide column">
+                            {{high.Frequency}}
+                        </div>
+                        <div class="twelve wide column">
+                            <div class="ts slider frequency">
+                                <div class="ts basic right pointing label">10</div>
+                                <input type="range" onmouseup="highPassFilter.frequency=Number(data_vue.high.Frequency)" v-model="high.Frequency" min="10" max="22050" step="1">
+                                <div class="ts basic left pointing label">22050</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="ts grid">
+                        <div class="two wide column">
+                            <button onclick="highPassFilter.peak=Number(data_vue.high.Peak)" class="ts tiny primary button">Peak</button>
+                        </div>
+                        <div class="one wide column">
+                            {{high.Peak}}
+                        </div>
+                        <div class="twelve wide column">
+                            <div class="ts slider peak">
+                                <div class="ts basic right pointing label">0.0001</div>
+                                <input type="range" onmouseup="highPassFilter.peak=Number(data_vue.high.Peak)" v-model="high.Peak" min="0.0001" max="20" step="0.0001">
+                                <div class="ts basic left pointing label">20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+        <br/>
+        <div class="ts inverted segment">
+            <details class="ts inverted accordion" open>
+                <summary>
+                    捲積
+                </summary>
+                <div class="content">
+                    <div id="Convolution_loader" style="color:#e4e4e4" class="ts basic dashed slate">
+                        <span class="header">上傳音訊檔</span>
+                        <span class="description">將音訊檔拖拉至此進行上傳。檔案類型須為mp3或wav</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="ts grid">
+                        <div class="two wide column">
+                            <button onclick="convolverFilter.mix=Number(data_vue.convolver.Mix)" class="ts tiny primary button">Mix</button>
+                        </div>
+                        <div class="one wide column">
+                            {{convolver.Mix}}
+                        </div>
+                        <div class="twelve wide column">
+                            <div class="ts slider peak">
+                                <div class="ts basic right pointing label">0</div>
+                                <input type="range" onmouseup="convolverFilter.mix=Number(data_vue.convolver.Mix)" v-model="convolver.Mix" min="0" max="1" step="0.01">
+                                <div class="ts basic left pointing label">1</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </details>
+        </div>
+    </div>
+    <br/>
+    <div class="ts grid">
+        <div class="two wide column"></div>
+        <div class="three wide column">
+            <button onclick="(function(){play();})()" class="ts primary button">撥放/暫停</button>
+        </div>
+        <div class="three wide column">
+            <button onclick="(function(){stop();})()" class="ts negative button">停止撥放</button>
+        </div>
+        <div class="three wide column">
+            <button onclick="(function(){DLWin();})()" class="ts info button">下載錄音</button>
+        </div>
+        <div class="three wide column">
+            <button onclick="(function(){LMWin();})()" class="ts inverted button">視覺音樂</button>
+        </div>
+    </div>
+    <ul id="recordingslist"></ul>
+</body>
+<script>
+    let data_vue = new Vue({
+        el: '#data',
+        data: {
+            low: {
+                Frequency: 22050,
+                Peak: 10
+            },
+            high: {
+                Frequency: 10,
+                Peak: 10
+            },
+            convolver: {
+                Mix: 0
+            }
+        }
+    })
+</script>
+<script>
+    let lowPassFilter = new Pizzicato.Effects.LowPassFilter({
+        frequency: Number(data_vue.low.Frequency),
+        peak: Number(data_vue.low.Peak)
+    });
+    let highPassFilter = new Pizzicato.Effects.HighPassFilter({
+        frequency: Number(data_vue.high.Frequency),
+        peak: Number(data_vue.high.Peak)
+    });
+    let convolverFilter;
+</script>
+<script>
+    let Audio_sound = null;
+    let rec = null;
+
+    let loader = document.getElementById('loader');
+    loader.ondragover = function() {
+        return false;
+    };
+    loader.ondragleave = loader.ondragend = function() {
+        return false;
+    };
+    loader.ondrop = function(e) {
+        e.preventDefault();
+        let file = e.dataTransfer.files[0];
+        console.log(file.path);
+        if (file.path.split(".").pop() != "mp3" && file.path.split(".").pop() != "wav" && file.path.split(".").pop() != "aac" && file.path.split(".").pop() != "json") {
+            alert("檔案類型錯誤");
+        } else {
+            if (Audio_sound != null) {
+                Audio_sound.volume = 0;
+                Audio_sound.stop();
+                Audio_sound.removeEffect(lowPassFilter);
+                Audio_sound.removeEffect(highPassFilter);
+                Audio_sound.removeEffect(convolverFilter);
+                Audio_sound.disconnect();
+            }
+            if (file.path.split(".").pop() == "mp3" || file.path.split(".").pop() == "wav" || file.path.split(".").pop() == "aac") {
+                Audio_sound = new Pizzicato.Sound(file.path);
+            } else {
+                Audio_sound = new Pizzicato.Sound(function(e) {
+                    let temp = CCmain.readFile(file.path);
+                    let output = e.outputBuffer.getChannelData(0);
+                    for (var i = 0; i < e.outputBuffer.length; i++)
+                        output[i] = temp[i];
+                });
+            }
+
+            Audio_sound.addEffect(lowPassFilter);
+            Audio_sound.addEffect(highPassFilter);
+            console.log(Audio_sound);
+
+            analyser = Pizzicato.context.createAnalyser();
+            Audio_sound.connect(analyser);
+            rec = new Recorder(analyser);
+        }
+        return false;
+    };
+</script>
+<script>
+    let Convolution_loader = document.getElementById('Convolution_loader');
+    Convolution_loader.ondragover = function() {
+        return false;
+    };
+    Convolution_loader.ondragleave = Convolution_loader.ondragend = function() {
+        return false;
+    };
+    Convolution_loader.ondrop = function(e) {
+        e.preventDefault();
+        let file = e.dataTransfer.files[0];
+        console.log(file.path);
+        if (file.path.split(".").pop() != "mp3" && file.path.split(".").pop() != "wav" && file.path.split(".").pop() != "aac") {
+            alert("檔案類型錯誤");
+        } else {
+            Audio_sound.removeEffect(convolverFilter);
+            convolverFilter = new Pizzicato.Effects.Convolver({
+                impulse: file.path,
+                mix: data_vue.convolver.Mix
+            }, function() {
+                console.log('Convolver ready to be used.');
+            });
+            Audio_sound.addEffect(convolverFilter);
+        }
+        return false;
+    };
+</script>
+<script>
+    let DLWin = function() {
+        // Or in the renderer process.
+        const BrowserWindow = require('electron').remote.BrowserWindow;
+        var win = new BrowserWindow({
+            width: 500,
+            height: 500,
+            show: false
+        });
+        win.on('closed', function() {
+            win = null;
+        });
+        win.openDevTools();
+        win.loadURL('file://' + __dirname + '/download.html');
+        win.show();
+    }
+    let dl = new BroadcastChannel('download');
+    dl.onmessage = function(ev) {
+        if (ev.data == "ready") {
+            rec.exportWAV(function(blob) {
+                console.log(URL.createObjectURL(blob))
+                dl.postMessage(URL.createObjectURL(blob));
+            })
+        }
+    };
+</script>
+<script>
+    let LMWin = function() {
+        // Or in the renderer process.
+        const BrowserWindow = require('electron').remote.BrowserWindow;
+        var win = new BrowserWindow({
+            width: 1020,
+            height: 650,
+            show: false
+        });
+        win.on('closed', function() {
+            win = null;
+        });
+        win.openDevTools();
+        win.loadURL('file://' + __dirname + '/lookmusic.html');
+        win.show();
+    }
+    let lm = new BroadcastChannel('lookmusic');
+
+
+
+    function renderFrame() {
+        let frequencyData = new Uint8Array(analyser.frequencyBinCount);
+        if (Audio_sound.playing == true) {
+            requestAnimationFrame(renderFrame);
+            // update data in frequencyData
+            analyser.getByteFrequencyData(frequencyData);
+            // render frame based on values in frequencyData
+            lm.postMessage(JSON.stringify(frequencyData));
+        }
+    };
+</script>
+<script>
+    function stop() {
+        Audio_sound.stop();
+        rec.clear();
+    }
+
+    function play() {
+        if (Audio_sound.playing == true) {
+            rec.stop();
+            Audio_sound.pause();
+        } else {
+            rec.record();
+            Audio_sound.play();
+            renderFrame();
+        };
+    }
+
+    function createDownloadLink() {
+        rec && rec.exportWAV(function(blob) {
+            var url = URL.createObjectURL(blob);
+            var li = document.createElement('li');
+            var au = document.createElement('audio');
+            var hf = document.createElement('a');
+
+            au.controls = true;
+            au.src = url;
+            hf.href = url;
+            hf.download = new Date().toISOString() + '.wav';
+            hf.innerHTML = hf.download;
+            li.appendChild(au);
+            li.appendChild(hf);
+            recordingslist.appendChild(li);
+        });
+    }
+
+    keyboardJS.bind("s", function() {
+        stop();
+    });
+    keyboardJS.bind("a", function() {
+        play();
+    });
+    keyboardJS.bind("d", function() {
+        createDownloadLink();
+    });
+</script>
+<script>
+    let new_test = [];
+
+    keyboardJS.bind("t", new_test[3] = function() {
+        keyboardJS.bind("e", new_test[4] = function() {
+            keyboardJS.bind("s", new_test[5] = function() {
+                keyboardJS.bind("t", new_test[6] = function() {
+                    window.location.href = "./test.html";
+                });
+                keyboardJS.unbind("s", new_test[5]);
+            });
+            keyboardJS.unbind("e", new_test[4]);
+        });
+        keyboardJS.unbind("t", new_test[3]);
+    });
+
+    keyboardJS.bind("enter", function() {
+        window.location.href = "./index.html";
+    });
+    keyboardJS.bind("esc", function() {
+        window.location.href = "./start.html";
+    });
+</script>
+<script>
+</script>
+
+</html>

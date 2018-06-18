@@ -1,0 +1,12 @@
+{
+    "width": 1000,
+    "height": "600",
+    "width_rate": 0.1,
+    "colorset": {
+        "background": "#000000",
+        "X_axis": "#ff0040",
+        "Y_axis": "#ff0040",
+        "dataBar": "#00fff2",
+        "mark": "#ff4444"
+    }
+}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <script src="./include.js"></script>
+    <title>filter</title>
+    <!-- Tocas UI：CSS 與元件 -->
+    <link rel="stylesheet" href="./tocasUI/tocas.css" />
+    <!-- Tocas JS：模塊與 JavaScript 函式 -->
+    <script src="./tocasUI/tocas.js"></script>
+</head>
+
+<body style="background-color:#e4e4e4;">
+    <ul id="recordingslist"></ul>
+</body>
+
+<script>
+    let dl = new BroadcastChannel('download');
+    dl.postMessage("ready");
+    dl.onmessage = function(ev) {
+        console.log(ev.data);
+        var url = ev.data;
+        var li = document.createElement('li');
+        var au = document.createElement('audio');
+        var hf = document.createElement('a');
+
+        au.controls = true;
+        au.src = url;
+        hf.href = url;
+        hf.download = new Date().toISOString() + '.wav';
+        hf.innerHTML = hf.download;
+        li.appendChild(au);
+        li.appendChild(hf);
+        recordingslist.appendChild(au);
+        recordingslist.appendChild(hf);
+        dl.onmessage = null;
+    };
+</script>
+
+</html>
