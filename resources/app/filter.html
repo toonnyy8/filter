@@ -149,7 +149,6 @@
             <button onclick="(function(){LMWin();})()" class="ts inverted button">視覺音樂</button>
         </div>
     </div>
-    <ul id="recordingslist"></ul>
 </body>
 <script>
     let data_vue = new Vue({
@@ -346,16 +345,6 @@
             recordingslist.appendChild(li);
         });
     }
-
-    keyboardJS.bind("s", function() {
-        stop();
-    });
-    keyboardJS.bind("a", function() {
-        play();
-    });
-    keyboardJS.bind("d", function() {
-        createDownloadLink();
-    });
 </script>
 <script>
     let new_test = [];
