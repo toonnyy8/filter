@@ -188,9 +188,9 @@ exports: {
                 stage.addChild(dataBar[i]); // 要將 Graphics 物件加到 Stage 中
                 dataBar[i].beginFill(colorset.dataBar); // 設定我們要畫的顏色
                 if (data[i] > 0) {
-                    dataBar[i].drawRect((width / 100) * i * width_rate * 5, data_root - (height * data[i] / height_rate), (width / 100) * width_rate, height * data[i] / height_rate);
+                    dataBar[i].drawRect((width / 100) * i * width_rate, data_root - (height * data[i] / height_rate), (width / 100) * width_rate, height * data[i] / height_rate);
                 } else {
-                    dataBar[i].drawRect((width / 100) * i * width_rate * 5, data_root, (width / 100) * width_rate, -1 * height * data[i] / height_rate);
+                    dataBar[i].drawRect((width / 100) * i * width_rate, data_root, (width / 100) * width_rate, -1 * height * data[i] / height_rate);
                 }
                 dataBar[i].interactive = true;
                 dataBar[i].buttonMode = true;
@@ -242,7 +242,7 @@ exports: {
                     };
                 };
                 mark.beginFill(colorset.mark); // 設定我們要畫的顏色
-                mark.drawRect((width / 100) * mark_data[i] * width_rate * 5, data_root, (width / 100) * width_rate, -1 * height * data[mark_data[i]] / height_rate);
+                mark.drawRect((width / 100) * mark_data[i] * width_rate, data_root, (width / 100) * width_rate, -1 * height * data[mark_data[i]] / height_rate);
             };
             stage.addChild(mark);
         };
