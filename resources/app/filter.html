@@ -210,8 +210,10 @@
             } else {
                 Audio_sound = new Pizzicato.Sound(function(e) {
                     let temp = CCmain.readFile(file.path);
+                    console.log(temp);
+                    console.log(e.outputBuffer.length);
                     let output = e.outputBuffer.getChannelData(0);
-                    for (var i = 0; i < e.outputBuffer.length; i++)
+                    for (let i = 0; i < temp.length; i++)
                         output[i] = temp[i];
                 });
             }
